@@ -1,17 +1,11 @@
-import os, datetime
-
-def time():
-    return datetime.datetime.now().strftime("[%H:%M:%S]")
+import os
 
 def local_directory():
     return os.path.join(os.getenv('LOCALAPPDATA') or os.path.expanduser('~\\AppData\\Local'), 'Bloxel')
 
 def directory_verify():
     directory = local_directory()
-    if os.path.isdir(directory):
-        print(f"{time()} SERVICE: directory.py has verified local directory at {directory}")
-    else:
-        print(f"{time()} SERVICE: directory.py could not verify local directory")
+    if not os.path.isdir(directory):
         directory_create()
 
 def directory_create():
@@ -23,5 +17,3 @@ def directory_create():
     if not os.path.isfile(config_path):
         with open(config_path, 'w', encoding='utf-8') as f:
             f.write('{}')
-
-    print(f"{time()} SERVICE: directory.py has created a new local directory at {directory}")

@@ -1,6 +1,11 @@
+<script src="./services/logger/web_console.js"></script>
+<script src="./services/loader/load.js"></script>
+
 <h1 id="error"></h1>
 
-<script src="./services/load/load.js"></script>
 <script>
     document.getElementById('error').textContent = error.burnt_coffee;
+    setInterval(() => {
+        console.log(error.burnt_coffee);
+    }, 5000);
 </script>

@@ -15,3 +15,5 @@
 
   global.__preloadCache = preloadCache;
 })(window);
+
+console.log('SERVICE: load.js has been initialized, cached the following data: ' + Object.keys(__preloadCache).join(', '));
