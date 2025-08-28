@@ -1,23 +1,20 @@
-import webview, atexit, datetime
+import atexit
 from runtime.services.directory import verify_directory, get_local_directory
-from runtime.services.log import get_logger, initialize_logging, set_log_directory, stop_logging
+from runtime.services.log import initialize_logging, set_log_directory, stop_logging, get_timestamp
+from runtime.services.window import window
 
-def get_timestamp():
-    return datetime.datetime.now().strftime('[%H:%M:%S]')
+def setup_engine():
+    log_manager = initialize_logging()
+    print(f'{get_timestamp()} ENGINE: main.py is setting up the engine')
+    verify_directory()
+    set_log_directory(get_local_directory())
+    atexit.register(stop_logging)
+    return log_manager
 
-log_manager = initialize_logging()
+def main():
+    setup_engine()
+    print(f'{get_timestamp()} ENGINE: main.py has initialized successfully')
+    window()
 
-verify_directory()
-
-set_log_directory(get_local_directory())
-
-atexit.register(stop_logging)
-
-window = webview.create_window(
-    title='Bloxel',
-    url='runtime/index.html',
-    js_api=get_logger()
-)
-
-webview.start()
-print(f'{get_timestamp()} ENGINE: Engine has exited by request of user')
+main()
+print(f'{get_timestamp()} ENGINE: main.py has exited by request of user')

@@ -1,13 +1,11 @@
-import os, datetime
-
-def get_timestamp():
-    return datetime.datetime.now().strftime('[%H:%M:%S]')
+import os
+from runtime.services.log import get_timestamp
 
 def get_local_directory():
     return os.path.join(os.getenv('LOCALAPPDATA') or os.path.expanduser('~\\AppData\\Local'), 'Bloxel')
 
 def verify_directory():
-    print(f'{get_timestamp()} SERVICE: directory.py has been initialized')
+    print(f'{get_timestamp()} SERVICE: directory.py has been initialized successfully')
     directory = get_local_directory()
     if os.path.isdir(directory):
         print(f'{get_timestamp()} SERVICE: directory.py has found {directory}')

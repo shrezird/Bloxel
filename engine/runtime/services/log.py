@@ -28,9 +28,9 @@ class LogManager:
         
         sys.stdout = LogCapture(self, self.original_stdout)
         sys.stderr = LogCapture(self, self.original_stderr)
-        
-        print(f'{get_timestamp()} SERVICE: log.py has been initialized')
-        
+
+        print(f'{get_timestamp()} SERVICE: log.py has been initialized successfully')
+
     def _load_version(self):
         with open('version.json', 'r') as f:
             return json.load(f)['version']
@@ -40,6 +40,7 @@ class LogManager:
         if os.path.exists(self.log_directory):
             self._initialize_log_file()
             self._flush_cached_messages()
+            print(f'{get_timestamp()} SERVICE: log.py has successfully created a new log at {self.log_file_path}')
     
     def _initialize_log_file(self):
         if not self.log_directory:
@@ -59,8 +60,6 @@ Total Playtime: 0:0:0:0
         
         with open(self.log_file_path, 'w') as f:
             f.write(initial_content)
-        
-        print(f'{get_timestamp()} SERVICE: log.py has successfully created a new log at {self.log_file_path}')
         
         self._start_playtime_tracking()
     

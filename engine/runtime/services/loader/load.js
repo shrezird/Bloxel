@@ -1,4 +1,4 @@
-console.log('SERVICE: load.js has been initialized');
+console.log('SERVICE: load.js has been initialized successfully');
 
 (function (global) {
   const dataNames = [
