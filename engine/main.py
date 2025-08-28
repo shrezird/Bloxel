@@ -1,27 +1,19 @@
-import webview
-from datetime import datetime
-from runtime.services.directory import directory_verify
-from runtime.services.logger.log import log
+import webview, atexit
+from runtime.services.directory import verify_directory, get_local_directory
+from runtime.services.log import get_logger, initialize_logging, set_log_directory, stop_logging
 
-class ConsoleAPI:
-    def print_console(self, msg):
-        current_time = datetime.now().strftime("%H:%M:%S")
-        print(f"[{current_time}] {msg}")
+log_manager = initialize_logging()
 
-directory_verify()
-log()
+verify_directory()
 
-api = ConsoleAPI()
+set_log_directory(get_local_directory())
+
+atexit.register(stop_logging)
 
 window = webview.create_window(
-    title = 'Bloxel',
-    url = 'runtime/index.html',
-    js_api=api
+    title='Bloxel',
+    url='runtime/index.html',
+    js_api=get_logger()
 )
-
-def on_loaded():
-    pass
-
-window.events.loaded += on_loaded
 
 webview.start()

@@ -1,3 +1,5 @@
+console.log('SERVICE: load.js has been initialized');
+
 (function (global) {
   const dataNames = [
     'error'
@@ -16,4 +18,4 @@
   global.__preloadCache = preloadCache;
 })(window);
 
-console.log('SERVICE: load.js has been initialized, cached the following data: ' + Object.keys(__preloadCache).join(', '));
+console.log('SERVICE: load.js has successfully preloaded and cached the following data: ' + Object.keys(__preloadCache).join(', '));

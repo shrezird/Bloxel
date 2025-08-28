@@ -1,4 +1,35 @@
-<script src="./services/logger/web_console.js"></script>
+<script>
+(function() {
+    var messageBuffer = [];
+    var originalLog = console.log;
+    var apiReady = false;
+    
+    console.log = function() {
+        var message = Array.prototype.slice.call(arguments).join(' ');
+        originalLog.apply(console, arguments);
+        
+        if (apiReady) {
+            window.pywebview.api.print_console(message);
+        } else {
+            messageBuffer.push(message);
+        }
+    };
+
+    var interval = setInterval(function() {
+        if (window.pywebview && window.pywebview.api) {
+            apiReady = true;
+            
+            messageBuffer.forEach(function(msg) {
+                window.pywebview.api.print_console(msg);
+            });
+            
+            messageBuffer = [];
+            clearInterval(interval);
+        }
+    }, 1);
+})();
+</script>
+
 <script src="./services/loader/load.js"></script>
 
 <h1 id="error"></h1>

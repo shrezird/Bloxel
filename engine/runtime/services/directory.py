@@ -1,19 +1,28 @@
-import os
+import os, datetime
 
-def local_directory():
+def get_timestamp():
+    return datetime.datetime.now().strftime('[%H:%M:%S]')
+
+def get_local_directory():
     return os.path.join(os.getenv('LOCALAPPDATA') or os.path.expanduser('~\\AppData\\Local'), 'Bloxel')
 
-def directory_verify():
-    directory = local_directory()
-    if not os.path.isdir(directory):
-        directory_create()
+def verify_directory():
+    print(f'{get_timestamp()} SERVICE: directory.py has been initialized')
+    directory = get_local_directory()
+    if os.path.isdir(directory):
+        print(f'{get_timestamp()} SERVICE: directory.py has found {directory}')
+        print(f'{get_timestamp()} SERVICE: directory.py has been stopped')
+    else:
+        print(f'{get_timestamp()} SERVICE: directory.py could not find {directory}, attempting to create the necessary directories...')
+        create_directory()
 
-def directory_create():
-    directory = local_directory()
+def create_directory():
+    directory = get_local_directory()
     os.makedirs(directory, exist_ok=True)
+    print(f'{get_timestamp()} SERVICE: directory.py has successfully created {directory}')
     os.makedirs(os.path.join(directory, 'logs'), exist_ok=True)
-
-    config_path = os.path.join(directory, 'configuration.json')
-    if not os.path.isfile(config_path):
-        with open(config_path, 'w', encoding='utf-8') as f:
-            f.write('{}')
+    print(f'{get_timestamp()} SERVICE: directory.py has successfully created {os.path.join(directory, "logs")}')
+    open(os.path.join(directory, 'configuration.json'), 'a').close()
+    print(f'{get_timestamp()} SERVICE: directory.py has successfully created {os.path.join(directory, "configuration.json")}')
+    print(f'{get_timestamp()} SERVICE: directory.py has successfully finished creating {directory}')
+    print(f'{get_timestamp()} SERVICE: directory.py has been stopped')
