@@ -13,8 +13,8 @@ def setup_engine():
 
 def main():
     setup_engine()
-    print(f'{get_timestamp()} ENGINE: main.py has initialized successfully')
+    print(f'{get_timestamp()} ENGINE: main.py has successfully set up the engine, launching window...')
     window()
 
 main()
-print(f'{get_timestamp()} ENGINE: main.py has exited by request of user')
+print(f'{get_timestamp()} ENGINE: main.py has successfully exited by request of user')

@@ -167,7 +167,7 @@ Total Playtime: 0:0:0:0
             self.cached_messages.append(message)
     
     def stop(self):
-        print(f'{get_timestamp()} SERVICE: log.py has been stopped')
+        print(f'{get_timestamp()} SERVICE: log.py has successfully been stopped')
         self.running = False
         
         self.message_queue.put(None)
@@ -212,6 +212,7 @@ class LogCapture:
         self.original_stream.flush()
 
 _log_manager = None
+_webview_connected = False
 
 def initialize_logging():
     global _log_manager
@@ -231,6 +232,10 @@ def stop_logging():
 
 class WebviewLogger:
     def print_console(self, msg):
+        global _webview_connected
+        if not _webview_connected:
+            print(f"{get_timestamp()} SERVICE: log.py is now successfully logging index.html")
+            _webview_connected = True
         print(f"{get_timestamp()} {msg}")
 
 def get_logger():
