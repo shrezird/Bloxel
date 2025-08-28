@@ -1,11 +1,4 @@
-import datetime
-import os
-import json
-import sys
-import threading
-import time
-import queue
-from io import StringIO
+import datetime, os, json, sys, threading, time, queue
 
 def get_timestamp():
     return datetime.datetime.now().strftime('[%H:%M:%S]')
@@ -39,12 +32,9 @@ class LogManager:
         print(f'{get_timestamp()} SERVICE: log.py has been initialized')
         
     def _load_version(self):
-        try:
-            with open('version.json', 'r') as f:
-                return json.load(f)['version']
-        except:
-            return 'Unknown'
-    
+        with open('version.json', 'r') as f:
+            return json.load(f)['version']
+
     def set_log_directory(self, directory):
         self.log_directory = os.path.join(directory, 'logs')
         if os.path.exists(self.log_directory):

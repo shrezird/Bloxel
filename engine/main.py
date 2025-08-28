@@ -1,6 +1,9 @@
-import webview, atexit
+import webview, atexit, datetime
 from runtime.services.directory import verify_directory, get_local_directory
 from runtime.services.log import get_logger, initialize_logging, set_log_directory, stop_logging
+
+def get_timestamp():
+    return datetime.datetime.now().strftime('[%H:%M:%S]')
 
 log_manager = initialize_logging()
 
@@ -17,3 +20,4 @@ window = webview.create_window(
 )
 
 webview.start()
+print(f'{get_timestamp()} ENGINE: Engine has exited by request of user')
