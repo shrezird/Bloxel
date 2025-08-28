@@ -8,5 +8,5 @@ def window():
         url='runtime/index.html',
         js_api=get_logger()
     )
-    print(f'{get_timestamp()} SERVICE: window.py has been initialized successfully')
+    print(f'{get_timestamp()} SERVICE: window.py has been initialized')
     webview.start()

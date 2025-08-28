@@ -29,7 +29,7 @@ class LogManager:
         sys.stdout = LogCapture(self, self.original_stdout)
         sys.stderr = LogCapture(self, self.original_stderr)
 
-        print(f'{get_timestamp()} SERVICE: log.py has been initialized successfully')
+        print(f'{get_timestamp()} SERVICE: log.py has been initialized')
 
     def _load_version(self):
         with open('version.json', 'r') as f:
@@ -40,7 +40,7 @@ class LogManager:
         if os.path.exists(self.log_directory):
             self._initialize_log_file()
             self._flush_cached_messages()
-            print(f'{get_timestamp()} SERVICE: log.py has successfully created a new log at {self.log_file_path}')
+            print(f'{get_timestamp()} SERVICE: log.py has created a new log at {self.log_file_path}')
     
     def _initialize_log_file(self):
         if not self.log_directory:
@@ -75,7 +75,7 @@ Total Playtime: 0:0:0:0
             for log_file in log_files[:-49]:
                 old_log_path = os.path.join(self.log_directory, log_file)
                 os.remove(old_log_path)
-                print(f'{get_timestamp()} SERVICE: log.py has successfully removed an older log named {log_file}')
+                print(f'{get_timestamp()} SERVICE: log.py has removed an older log named {log_file}')
     
     def _flush_cached_messages(self):
         if self.cached_messages and self.log_file_path:
@@ -167,7 +167,7 @@ Total Playtime: 0:0:0:0
             self.cached_messages.append(message)
     
     def stop(self):
-        print(f'{get_timestamp()} SERVICE: log.py has successfully been stopped')
+        print(f'{get_timestamp()} SERVICE: log.py has been stopped')
         self.running = False
         
         self.message_queue.put(None)
@@ -192,7 +192,7 @@ Total Playtime: 0:0:0:0
                 with open(self.log_file_path, 'w', encoding='utf-8') as f:
                     f.write(content)
             
-            print(f'{get_timestamp()} SERVICE: log.py has successfully saved the new log at {self.log_file_path}')
+            print(f'{get_timestamp()} SERVICE: log.py has saved the new log at {self.log_file_path}')
         
         sys.stdout = self.original_stdout
         sys.stderr = self.original_stderr
@@ -234,7 +234,7 @@ class WebviewLogger:
     def print_console(self, msg):
         global _webview_connected
         if not _webview_connected:
-            print(f"{get_timestamp()} SERVICE: log.py is now successfully logging index.html")
+            print(f"{get_timestamp()} SERVICE: log.py is now logging index.html")
             _webview_connected = True
         print(f"{get_timestamp()} {msg}")
 
