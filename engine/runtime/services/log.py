@@ -1,13 +1,12 @@
 import datetime, os, json, sys, threading, time, queue
 
-def get_timestamp():
-    return datetime.datetime.now().strftime('[%H:%M:%S]')
+from runtime.services.utilities import p
 
 def get_detailed_timestamp():
-    return datetime.datetime.now().strftime('%m/%d/%y - %H:%M:%S:%f')[:-4]
+    return datetime.datetime.now().strftime("%m/%d/%y - %H:%M:%S:%f")[:-4]
 
 def get_filename_timestamp():
-    return datetime.datetime.now().strftime('%m.%d.%y - %H.%M.%S.%f')[:-4]
+    return datetime.datetime.now().strftime("%m.%d.%y - %H.%M.%S.%f")[:-4]
 
 class LogManager:
     def __init__(self):
@@ -29,24 +28,24 @@ class LogManager:
         sys.stdout = LogCapture(self, self.original_stdout)
         sys.stderr = LogCapture(self, self.original_stderr)
 
-        print(f'{get_timestamp()} SERVICE: log.py has been initialized')
+        p("SERVICES: log.py started")
 
     def _load_version(self):
-        with open('version.json', 'r') as f:
-            return json.load(f)['version']
+        with open("version.json", "r") as f:
+            return json.load(f)["version"]
 
     def set_log_directory(self, directory):
-        self.log_directory = os.path.join(directory, 'logs')
+        self.log_directory = os.path.join(directory, "logs")
         if os.path.exists(self.log_directory):
-            self._initialize_log_file()
+            self.create_log()
             self._flush_cached_messages()
-            print(f'{get_timestamp()} SERVICE: log.py has created a new log at {self.log_file_path}')
-    
-    def _initialize_log_file(self):
+            p(f"SERVICES: log.py created log = {self.log_file_path}")
+
+    def create_log(self):
         if not self.log_directory:
             return
             
-        self._cleanup_old_logs()
+        self.cleanup_old_logs()
         
         filename = f"{self.version} - {get_filename_timestamp()}.txt"
         self.log_file_path = os.path.join(self.log_directory, filename)
@@ -58,16 +57,16 @@ Total Playtime: 0:0:0:0
 
 """
         
-        with open(self.log_file_path, 'w') as f:
+        with open(self.log_file_path, "w") as f:
             f.write(initial_content)
         
-        self._start_playtime_tracking()
+        self.start_playtime_tracking()
     
-    def _cleanup_old_logs(self):
+    def cleanup_old_logs(self):
         if not self.log_directory or not os.path.exists(self.log_directory):
             return
             
-        log_files = [f for f in os.listdir(self.log_directory) if f.endswith('.txt')]
+        log_files = [f for f in os.listdir(self.log_directory) if f.endswith(".txt")]
         
         if len(log_files) >= 50:
             log_files.sort(key=lambda x: os.path.getctime(os.path.join(self.log_directory, x)))
@@ -75,8 +74,8 @@ Total Playtime: 0:0:0:0
             for log_file in log_files[:-49]:
                 old_log_path = os.path.join(self.log_directory, log_file)
                 os.remove(old_log_path)
-                print(f'{get_timestamp()} SERVICE: log.py has removed an older log named {log_file}')
-    
+                p(f"SERVICES: log.py removed = {log_file}")
+
     def _flush_cached_messages(self):
         if self.cached_messages and self.log_file_path:
             for message in self.cached_messages:
@@ -102,14 +101,14 @@ Total Playtime: 0:0:0:0
         with self.log_lock:
             if self.log_file_path and os.path.exists(self.log_file_path):
                 try:
-                    with open(self.log_file_path, 'r', encoding='utf-8') as f:
+                    with open(self.log_file_path, "r", encoding="utf-8") as f:
                         content = f.read()
                     
-                    lines = content.split('\n')
+                    lines = content.split("\n")
                     
                     insert_index = len(lines)
                     for i, line in enumerate(lines):
-                        if line.startswith('End:'):
+                        if line.startswith("End:"):
                             insert_index = i
                             break
                     
@@ -121,19 +120,19 @@ Total Playtime: 0:0:0:0
                     
                     lines.insert(insert_index, message)
                     
-                    with open(self.log_file_path, 'w', encoding='utf-8') as f:
-                        f.write('\n'.join(lines))
+                    with open(self.log_file_path, "w", encoding="utf-8") as f:
+                        f.write("\n".join(lines))
                 except Exception as e:
                     self.cached_messages.append(message)
     
-    def _start_playtime_tracking(self):
+    def start_playtime_tracking(self):
         if self.playtime_thread and self.playtime_thread.is_alive():
             return
             
-        self.playtime_thread = threading.Thread(target=self._update_playtime, daemon=True)
+        self.playtime_thread = threading.Thread(target=self.update_playtime, daemon=True)
         self.playtime_thread.start()
     
-    def _update_playtime(self):
+    def update_playtime(self):
         while self.running and self.log_file_path:
             try:
                 with self.log_lock:
@@ -144,17 +143,17 @@ Total Playtime: 0:0:0:0
                     
                     playtime_str = f"{int(hours)}:{int(minutes)}:{int(seconds)}:{milliseconds}"
                     
-                    with open(self.log_file_path, 'r', encoding='utf-8') as f:
+                    with open(self.log_file_path, "r", encoding="utf-8") as f:
                         content = f.read()
                     
-                    lines = content.split('\n')
+                    lines = content.split("\n")
                     for i, line in enumerate(lines):
-                        if line.startswith('Total Playtime:'):
+                        if line.startswith("Total Playtime:"):
                             lines[i] = f"Total Playtime: {playtime_str}"
                             break
                     
-                    with open(self.log_file_path, 'w', encoding='utf-8') as f:
-                        f.write('\n'.join(lines))
+                    with open(self.log_file_path, "w", encoding="utf-8") as f:
+                        f.write("\n".join(lines))
                 
                 time.sleep(0.1)
             except:
@@ -167,7 +166,7 @@ Total Playtime: 0:0:0:0
             self.cached_messages.append(message)
     
     def stop(self):
-        print(f'{get_timestamp()} SERVICE: log.py has been stopped')
+        p("SERVICES: log.py stopped")
         self.running = False
         
         self.message_queue.put(None)
@@ -176,23 +175,23 @@ Total Playtime: 0:0:0:0
         
         if self.log_file_path and os.path.exists(self.log_file_path):
             with self.log_lock:
-                with open(self.log_file_path, 'r', encoding='utf-8') as f:
+                with open(self.log_file_path, "r", encoding="utf-8") as f:
                     content = f.read()
                 
                 end_time = get_detailed_timestamp()
                 
-                if not content.endswith('\n\n'):
-                    if content.endswith('\n'):
-                        content += '\n'
+                if not content.endswith("\n\n"):
+                    if content.endswith("\n"):
+                        content += "\n"
                     else:
-                        content += '\n\n'
+                        content += "\n\n"
                 
                 content += f"End: {end_time}"
                 
-                with open(self.log_file_path, 'w', encoding='utf-8') as f:
+                with open(self.log_file_path, "w", encoding="utf-8") as f:
                     f.write(content)
             
-            print(f'{get_timestamp()} SERVICE: log.py has saved the new log at {self.log_file_path}')
+            p(f"SERVICES: log.py saved log = {self.log_file_path}")
         
         sys.stdout = self.original_stdout
         sys.stderr = self.original_stderr
@@ -214,7 +213,7 @@ class LogCapture:
 _log_manager = None
 _webview_connected = False
 
-def initialize_logging():
+def start_logging():
     global _log_manager
     if _log_manager is None:
         _log_manager = LogManager()
@@ -234,9 +233,9 @@ class WebviewLogger:
     def print_console(self, msg):
         global _webview_connected
         if not _webview_connected:
-            print(f"{get_timestamp()} SERVICE: log.py is now logging index.html")
+            p(f"SERVICES: log.py is logging index.html")
             _webview_connected = True
-        print(f"{get_timestamp()} {msg}")
+        p(f"{msg}")
 
 def get_logger():
     return WebviewLogger()

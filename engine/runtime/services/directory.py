@@ -1,26 +1,23 @@
 import os
-from runtime.services.log import get_timestamp
 
-def get_local_directory():
-    return os.path.join(os.getenv('LOCALAPPDATA') or os.path.expanduser('~\\AppData\\Local'), 'Bloxel')
+from runtime.services.utilities import p, local_directory
 
-def verify_directory():
-    print(f'{get_timestamp()} SERVICE: directory.py has been initialized')
-    directory = get_local_directory()
-    if os.path.isdir(directory):
-        print(f'{get_timestamp()} SERVICE: directory.py has found {directory}')
-        print(f'{get_timestamp()} SERVICE: directory.py has been stopped')
+p("SERVICES: directory.py started")
+
+def verify_local_directory():
+    if os.path.isdir(local_directory()):
+        p(f"SERVICES: directory.py found = {local_directory()}")
+        p(f"SERVICES: directory.py stopped (code 0)")
     else:
-        print(f'{get_timestamp()} SERVICE: directory.py could not find {directory}, attempting to create the necessary directories...')
-        create_directory()
+        p(f"SERVICES: directory.py could not find {local_directory()}, creating the necessary directories...")
+        create_local_directory()
 
-def create_directory():
-    directory = get_local_directory()
-    os.makedirs(directory, exist_ok=True)
-    print(f'{get_timestamp()} SERVICE: directory.py has created {directory}')
-    os.makedirs(os.path.join(directory, 'logs'), exist_ok=True)
-    print(f'{get_timestamp()} SERVICE: directory.py has created {os.path.join(directory, "logs")}')
-    open(os.path.join(directory, 'configuration.json'), 'a').close()
-    print(f'{get_timestamp()} SERVICE: directory.py has created {os.path.join(directory, "configuration.json")}')
-    print(f'{get_timestamp()} SERVICE: directory.py has finished creating {directory}')
-    print(f'{get_timestamp()} SERVICE: directory.py has been stopped')
+def create_local_directory():
+    os.makedirs(local_directory(), exist_ok=True)
+    p(f"SERVICES: directory.py created = {local_directory()}")
+
+    os.makedirs(os.path.join(local_directory(), "logs"), exist_ok=True)
+    p(f"SERVICES: directory.py created = {os.path.join(local_directory(), "logs")}")
+
+    p(f"SERVICES: directory.py finished creating = {local_directory()}")
+    p(f"SERVICES: directory.py stopped (code 1)")

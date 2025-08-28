@@ -1,3 +1,4 @@
-{
+{   
+    "invalid_request": "ERROR: load.js has rejected a request due to invalid parameters",
     "burnt_coffee": "ERROR: burnt_coffee"
 }
