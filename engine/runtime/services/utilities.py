@@ -1,8 +1,5 @@
 import time, os
 
-def test():
-    return os
-
 def p(string):
     print(f"{time.strftime("[%H:%M:%S]")} {string}")
 

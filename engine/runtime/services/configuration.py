@@ -1,7 +1,9 @@
-from runtime.services.utilities import p, local_directory, test
+import os
+
+from runtime.services.utilities import p, local_directory
 
 def configuration():
-    return test.path.join(local_directory(), "configuration.json")
+    return os.path.join(local_directory(), "configuration.json")
 
 # !PLACEHOLDER!
 def load_window_state():
