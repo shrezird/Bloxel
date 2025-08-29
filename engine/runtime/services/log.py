@@ -8,7 +8,18 @@ def get_detailed_timestamp():
 def get_filename_timestamp():
     return datetime.datetime.now().strftime("%m.%d.%y - %H.%M.%S.%f")[:-4]
 
-class LogManager:
+class log_capture:
+    def __init__(self, log_manager, original_stream):
+        self.log_manager = log_manager
+        self.original_stream = original_stream
+    def write(self, text):
+        self.original_stream.write(text)
+        if text.strip():
+            self.log_manager.log_message(text.strip())
+    def flush(self):
+        self.original_stream.flush()
+
+class log_manager:
     def __init__(self):
         self.log_file_path = None
         self.cached_messages = []
@@ -22,12 +33,9 @@ class LogManager:
         self.message_queue = queue.Queue()
         self.log_writer_thread = None
         self.log_lock = threading.Lock()
-        
         self._start_log_writer()
-        
-        sys.stdout = LogCapture(self, self.original_stdout)
-        sys.stderr = LogCapture(self, self.original_stderr)
-
+        sys.stdout = log_capture(self, self.original_stdout)
+        sys.stderr = log_capture(self, self.original_stderr)
         p("SERVICES: log.py started")
 
     def _load_version(self):
@@ -196,7 +204,7 @@ Total Playtime: 0:0:0:0
         sys.stdout = self.original_stdout
         sys.stderr = self.original_stderr
 
-class LogCapture:
+class log_capture:
     def __init__(self, log_manager, original_stream):
         self.log_manager = log_manager
         self.original_stream = original_stream
@@ -216,7 +224,7 @@ _webview_connected = False
 def start_logging():
     global _log_manager
     if _log_manager is None:
-        _log_manager = LogManager()
+        _log_manager = log_manager()
     return _log_manager
 
 def set_log_directory(directory):
@@ -229,7 +237,7 @@ def stop_logging():
     if _log_manager:
         _log_manager.stop()
 
-class WebviewLogger:
+class webview_logger:
     def print_console(self, msg):
         global _webview_connected
         if not _webview_connected:
@@ -238,4 +246,4 @@ class WebviewLogger:
         p(f"{msg}")
 
 def get_logger():
-    return WebviewLogger()
+    return webview_logger()
