@@ -1,18 +1,18 @@
-from runtime.services import runtime
-from runtime.services.utilities import p, local_directory
-from runtime.services.log import start_logging, set_log_directory, stop_logging
-from runtime.services.directory import verify_local_directory
-from runtime.services.window import window
+from runtime.services.backend.runtime import start_runtime, stop_runtime
+from runtime.services.backend.utilities import p, local_directory
+from runtime.services.backend.log import start_logging, set_log_directory, stop_logging
+from runtime.services.backend.directory import verify_local_directory
+from runtime.services.frontend.window import window
 
 def start_engine():
     log = start_logging()
-    runtime.start()
+    start_runtime()
     verify_local_directory()
     set_log_directory(local_directory())
     return log
 
 def stop_engine():
-    runtime.stop()
+    stop_runtime()
     stop_logging()
 
 def start_main():

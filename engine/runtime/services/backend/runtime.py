@@ -1,10 +1,10 @@
-from runtime.services.utilities import p, start_service_utilities, stop_service_utilities
-from runtime.services.log import start_service_log, stop_service_log
-from runtime.services.directory import start_service_directory
-from runtime.services.window import start_service_window, stop_service_window
-from runtime.services.configuration import start_service_configuration, stop_service_configuration
+from runtime.services.backend.utilities import p, start_service_utilities, stop_service_utilities
+from runtime.services.backend.log import start_service_log, stop_service_log
+from runtime.services.backend.directory import start_service_directory
+from runtime.services.frontend.window import start_service_window, stop_service_window
+from runtime.services.backend.configuration import start_service_configuration, stop_service_configuration
 
-def start():
+def start_runtime():
     from main import start_engine_main
     start_engine_main()
     start_service_runtime()
@@ -14,7 +14,7 @@ def start():
     start_service_window()
     start_service_configuration()
 
-def stop():
+def stop_runtime():
     from main import stop_engine_main
     stop_service_window()
     stop_service_configuration()

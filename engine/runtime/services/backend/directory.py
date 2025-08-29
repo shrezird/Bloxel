@@ -1,6 +1,6 @@
 import os
 
-from runtime.services.utilities import p, local_directory
+from runtime.services.backend.utilities import p, local_directory
 
 def verify_local_directory():
     if os.path.isdir(local_directory()):

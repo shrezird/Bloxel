@@ -1,6 +1,6 @@
 import datetime, sys, threading, json, os, queue, time
 
-from runtime.services.utilities import p
+from runtime.services.backend.utilities import p
 
 def get_detailed_timestamp():
     return datetime.datetime.now().strftime("%m/%d/%y - %H:%M:%S:%f")[:-4]

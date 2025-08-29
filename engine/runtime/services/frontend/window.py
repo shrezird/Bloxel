@@ -1,11 +1,11 @@
 import webview
 
-#from runtime.services.configuration import load_window_state, save_window_state
-from runtime.services.log import get_logger
-from runtime.services.utilities import p
+from runtime.services.backend.configuration import load_window_state, save_window_state
+from runtime.services.backend.log import get_logger
+from runtime.services.backend.utilities import p
 
-#load_window_state()
-#save_window_state()
+load_window_state()
+save_window_state()
 
 def window():
     webview.create_window(
