@@ -1,15 +1,24 @@
 import webview
 
+#from runtime.services.configuration import load_window_state, save_window_state
 from runtime.services.log import get_logger
 from runtime.services.utilities import p
+
+#load_window_state()
+#save_window_state()
 
 def window():
     webview.create_window(
         title="Bloxel",
         url="runtime/index.html",
+        min_size=(960, 540),
         js_api=get_logger()
     )
-    p("SERVICES: window.py started")
 
     webview.start()
-    p("SERVICES: window.py stopped")
+
+def start_service_window():
+    p("SERVICES: window.py started")
+
+def stop_service_window():
+    p("SERVICES: window.py stopping")

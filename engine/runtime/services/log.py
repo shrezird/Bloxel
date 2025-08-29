@@ -38,7 +38,6 @@ class log_manager:
         self.start_log_writer()
         sys.stdout = log_capture(self, self.original_stdout)
         sys.stderr = log_capture(self, self.original_stderr)
-        p("SERVICES: log.py started")
 
     def load_version(self):
         with open("version.json", "r") as file:
@@ -157,7 +156,6 @@ class log_manager:
             self.cached_messages.append(message)
 
     def stop(self):
-        p("SERVICES: log.py stopped")
         self.running = False
         self.message_queue.put(None)
         if self.log_writer_thread:
@@ -196,6 +194,7 @@ def set_log_directory(directory):
 def stop_logging():
     global log_manager_instance
     if log_manager_instance:
+        time.sleep(0.5)
         log_manager_instance.stop()
 
 class webview_logger:
@@ -208,3 +207,9 @@ class webview_logger:
 
 def get_logger():
     return webview_logger()
+
+def start_service_log():
+    p("SERVICES: log.py started")
+
+def stop_service_log():
+    p("SERVICES: log.py stopping")
