@@ -2,7 +2,7 @@ console.log("SERVICES: load.js started");
 
 (function (global) {
   const data_names = [
-    "load_error"
+    "loadERROR"
   ];
   const base_directory = document.currentScript.src.replace(/[^/]+$/, "");
   const preload_cache = {};
@@ -22,7 +22,7 @@ console.log("SERVICES: load.js started");
           return Reflect.get(target, prop, receiver);
         } else {
           console.log("SERVICES: load.js received invalid request from (" + requesting_file + ") for (" + requested_data + ") from (" + requested_file + ")");
-          return preload_cache["load_error"]["invalid_request"];
+          return preload_cache["loadERROR"]["invalid_request"];
         }
       }
     });
