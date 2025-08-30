@@ -80,7 +80,7 @@ class log_manager:
     def flush_cached_messages(self):
         if self.cached_messages and self.log_file_path:
             for message in self.cached_messages:
-                self.write_message_to_log(message)
+                self.message_queue.put(message)
             self.cached_messages.clear()
 
     def start_log_writer(self):
@@ -89,37 +89,62 @@ class log_manager:
 
     def process_log_messages(self):
         while self.running:
-            try:
-                message = self.message_queue.get(timeout=0.1)
-                if message is None:
+            messages_to_write = []
+            deadline = time.time() + 0.01
+            
+            while time.time() < deadline:
+                try:
+                    message = self.message_queue.get_nowait()
+                    if message is None:
+                        if messages_to_write:
+                            self.write_messages_batch(messages_to_write)
+                        return
+                    messages_to_write.append(message)
+                    self.message_queue.task_done()
+                except queue.Empty:
                     break
-                self.write_message_to_log(message)
-                self.message_queue.task_done()
-            except queue.Empty:
-                continue
+            
+            if messages_to_write:
+                self.write_messages_batch(messages_to_write)
+            
+            time.sleep(0.01)
+
+    def write_messages_batch(self, messages):
+        with self.log_lock:
+            if not self.log_file_path or not os.path.exists(self.log_file_path):
+                self.cached_messages.extend(messages)
+                return
+            
+            lines = self.read_log_file_lines()
+            insert_index = self.find_insertion_point(lines)
+            
+            for message in messages:
+                lines.insert(insert_index, message)
+                insert_index += 1
+            
+            self.write_log_file_lines(lines)
 
     def write_message_to_log(self, message):
-        with self.log_lock:
-            if self.log_file_path and os.path.exists(self.log_file_path):
-                try:
-                    with open(self.log_file_path, "r", encoding="utf-8") as file:
-                        content = file.read()
-                    lines = content.split("\n")
-                    insert_index = len(lines)
-                    for index, line in enumerate(lines):
-                        if line.startswith("End:"):
-                            insert_index = index
-                            break
-                    if insert_index == len(lines):
-                        for index in range(len(lines) - 1, -1, -1):
-                            if lines[index].strip():
-                                insert_index = index + 1
-                                break
-                    lines.insert(insert_index, message)
-                    with open(self.log_file_path, "w", encoding="utf-8") as file:
-                        file.write("\n".join(lines))
-                except Exception:
-                    self.cached_messages.append(message)
+        self.write_messages_batch([message])
+
+    def find_insertion_point(self, lines):
+        for index, line in enumerate(lines):
+            if line.startswith("End:"):
+                return index
+        
+        for index in range(len(lines) - 1, -1, -1):
+            if lines[index].strip():
+                return index + 1
+        
+        return len(lines)
+
+    def read_log_file_lines(self):
+        with open(self.log_file_path, "r", encoding="utf-8") as file:
+            return file.read().split("\n")
+
+    def write_log_file_lines(self, lines):
+        with open(self.log_file_path, "w", encoding="utf-8") as file:
+            file.write("\n".join(lines))
 
     def start_playtime_tracking(self):
         if self.playtime_thread and self.playtime_thread.is_alive():
@@ -129,31 +154,31 @@ class log_manager:
 
     def update_playtime(self):
         while self.running and self.log_file_path:
-            try:
-                with self.log_lock:
-                    elapsed = datetime.datetime.now() - self.start_time
-                    hours, remainder = divmod(elapsed.total_seconds(), 3600)
-                    minutes, seconds = divmod(remainder, 60)
-                    milliseconds = elapsed.microseconds // 1000
-                    playtime_str = f"{int(hours)}:{int(minutes)}:{int(seconds)}:{milliseconds}"
-                    with open(self.log_file_path, "r", encoding="utf-8") as file:
-                        content = file.read()
-                    lines = content.split("\n")
-                    for index, line in enumerate(lines):
-                        if line.startswith("Total Playtime:"):
-                            lines[index] = f"Total Playtime: {playtime_str}"
-                            break
-                    with open(self.log_file_path, "w", encoding="utf-8") as file:
-                        file.write("\n".join(lines))
-                time.sleep(0.1)
-            except Exception:
-                break
+            with self.log_lock:
+                if not os.path.exists(self.log_file_path):
+                    break
+                
+                elapsed = datetime.datetime.now() - self.start_time
+                hours, remainder = divmod(elapsed.total_seconds(), 3600)
+                minutes, seconds = divmod(remainder, 60)
+                milliseconds = elapsed.microseconds // 1000
+                playtime_str = f"{int(hours)}:{int(minutes)}:{int(seconds)}:{milliseconds}"
+                
+                lines = self.read_log_file_lines()
+                for index, line in enumerate(lines):
+                    if line.startswith("Total Playtime:"):
+                        lines[index] = f"Total Playtime: {playtime_str}"
+                        break
+                self.write_log_file_lines(lines)
+            
+            time.sleep(0.1)
 
     def log_message(self, message):
-        if self.log_file_path:
-            self.message_queue.put(message)
-        else:
-            self.cached_messages.append(message)
+        with self.log_lock:
+            if self.log_file_path:
+                self.message_queue.put(message)
+            else:
+                self.cached_messages.append(message)
 
     def stop(self):
         self.running = False
@@ -162,17 +187,15 @@ class log_manager:
             self.log_writer_thread.join(timeout=1.0)
         if self.log_file_path and os.path.exists(self.log_file_path):
             with self.log_lock:
-                with open(self.log_file_path, "r", encoding="utf-8") as file:
-                    content = file.read()
+                lines = self.read_log_file_lines()
                 end_time = get_detailed_timestamp()
-                if not content.endswith("\n\n"):
-                    if content.endswith("\n"):
-                        content += "\n"
-                    else:
-                        content += "\n\n"
-                content += f"End: {end_time}"
-                with open(self.log_file_path, "w", encoding="utf-8") as file:
-                    file.write(content)
+                
+                while lines and not lines[-1].strip():
+                    lines.pop()
+                
+                lines.append(f"End: {end_time}")
+                
+                self.write_log_file_lines(lines)
             p(f"SERVICES: log.py saved log = {self.log_file_path}")
         sys.stdout = self.original_stdout
         sys.stderr = self.original_stderr
