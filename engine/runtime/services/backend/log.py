@@ -201,7 +201,7 @@ class webview_logger:
     def print_console(self, message):
         global webview_connected
         if not webview_connected:
-            p("SERVICES: log.py is logging index.html")
+            p("SERVICES: log.py logging index.html")
             webview_connected = True
         p(f"{message}")
 
