@@ -1,13 +1,14 @@
 import webview
 
-from runtime.services.backend.log import get_logger
 from runtime.services.backend.utilities import p
+from runtime.services.backend.log import get_logger
 
 def window():
     webview.create_window(
         title="Bloxel",
         url="runtime/index.html",
-        min_size=(960, 540),
+        maximized=True,
+        min_size=(515, 360),
         js_api=get_logger()
     )
 
