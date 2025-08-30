@@ -1,5 +1,4 @@
-import webview
-import keyboard
+import webview, keyboard
 
 from runtime.services.backend.utilities import p
 from runtime.services.backend.log import get_logger
@@ -14,12 +13,6 @@ def start_window():
         maximized=True,
         js_api=get_logger()
     )
-
-    def maximized():
-        if window.maximized == True:
-            p(f"SERVICES: window.py maximized = True")
-        else:
-            p(f"SERVICES: window.py maximized = False")
 
     def resized():
         width = window.width
@@ -36,14 +29,14 @@ def start_window():
             fullscreened = True
             window.resize(515, 360)
             window.toggle_fullscreen()
-            p(f"SERVICES: window.py fullscreen = True")
-            maximized()
+            p("SERVICES: window.py fullscreen = True")
+            p("SERVICES: window.py maximized = False")
         else:
             fullscreened = False
             window.toggle_fullscreen()
             window.maximize()
-            p(f"SERVICES: window.py fullscreen = False")
-            maximized()
+            p("SERVICES: window.py fullscreen = False")
+            p("SERVICES: window.py maximized = True")
 
     def hotkey_fullscreen():
         keyboard.add_hotkey('f11', fullscreen)
