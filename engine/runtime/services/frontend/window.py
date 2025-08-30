@@ -12,23 +12,13 @@ def start_window():
         min_size=(515, 360),
         js_api=get_logger()
     )
-
-    def minimize():
-        p("SERVICES: window.py minimized")
-
-    def restore():
-        p("SERVICES: window.py restored")
-
-    main.events.minimized += minimize
-    main.events.restored += restore
+    is_fullscreen = False
 
     def fullscreen():
-        if main.fullscreen:
-            main.toggle_fullscreen()
-            main.maximized = True
-        else:
-            main.toggle_fullscreen()
-            main.maximized = False
+        nonlocal is_fullscreen
+        is_fullscreen = not is_fullscreen
+        main.toggle_fullscreen()
+        p(f"SERVICES: window.py fullscreen = {is_fullscreen}")
 
     def hotkey_fullscreen():
         keyboard.add_hotkey('f11', fullscreen)
