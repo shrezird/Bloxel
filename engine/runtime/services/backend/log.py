@@ -231,6 +231,7 @@ class webview_logger:
 def get_logger():
     return webview_logger()
 
+# runtime.py accesses for logging runtime start/stop events.
 def start_service_log():
     p("SERVICES: log.py started")
 

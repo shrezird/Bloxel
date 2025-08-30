@@ -4,6 +4,8 @@ from runtime.services.backend.directory import start_service_directory
 from runtime.services.frontend.window import start_service_window, stop_service_window
 from runtime.services.backend.configuration import start_service_configuration, stop_service_configuration
 
+# !runtime.py is strictly used for logging runtime start/stop events!
+
 def start_runtime():
     from main import start_engine_main
     start_engine_main()
@@ -23,6 +25,7 @@ def stop_runtime():
     stop_service_runtime()
     stop_engine_main()
 
+# runtime.py accesses for logging runtime start/stop events.
 def start_service_runtime():
     p("SERVICES: runtime.py started")
 

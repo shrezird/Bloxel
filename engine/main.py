@@ -19,6 +19,7 @@ def start_main():
     start_engine()
     start_window()
 
+# runtime.py accesses for logging runtime start/stop events.
 def start_engine_main():
     p("ENGINE: main.py started")
 

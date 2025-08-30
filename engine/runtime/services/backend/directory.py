@@ -31,15 +31,18 @@ def create_local_directory():
         os.makedirs(os.path.join(local_directory(), "logs"), exist_ok=True)
         p(f"SERVICES: directory.py created = {os.path.join(local_directory(), "logs")}")
 
+        # !This is a required placeholder for configuration.py!
         open(os.path.join(local_directory(), "configuration.json"), "a").close()
         p(f"SERVICES: directory.py created = {os.path.join(local_directory(), "configuration.json")}")
 
         p(f"SERVICES: directory.py finished creating = {local_directory()}")
         p(f"SERVICES: directory.py stopping (code 1)")
     except:
+        # !WARNING: Without local directory the engine WILL NOT run! This is a fallback to notify the user!
         p(f"SERVICES: directory.py failed")
         p(f"SERVICES: directory.py stopping (code 2)")
         critical_error()
 
+# runtime.py accesses for logging runtime start/stop events.
 def start_service_directory():
     p("SERVICES: directory.py started")
