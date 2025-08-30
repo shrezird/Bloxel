@@ -15,6 +15,12 @@ def start_window():
         js_api=get_logger()
     )
 
+    def maximized():
+        if window.maximized == True:
+            p(f"SERVICES: window.py maximized = True")
+        else:
+            p(f"SERVICES: window.py maximized = False")
+
     def resized():
         width = window.width
         height = window.height
@@ -22,22 +28,22 @@ def start_window():
 
     window.events.resized += resized
 
-    is_fullscreen = False
+    fullscreened = False
     
     def fullscreen():
-        nonlocal is_fullscreen
-        if is_fullscreen == False:
-            is_fullscreen = True
+        nonlocal fullscreened
+        if fullscreened == False:
+            fullscreened = True
             window.resize(515, 360)
             window.toggle_fullscreen()
             p(f"SERVICES: window.py fullscreen = True")
-            p(f"SERVICES: window.py maximized = False")
+            maximized()
         else:
-            is_fullscreen = False
+            fullscreened = False
             window.toggle_fullscreen()
             window.maximize()
             p(f"SERVICES: window.py fullscreen = False")
-            p(f"SERVICES: window.py maximized = True")
+            maximized()
 
     def hotkey_fullscreen():
         keyboard.add_hotkey('f11', fullscreen)
