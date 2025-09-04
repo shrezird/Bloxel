@@ -1,4 +1,4 @@
 <details>
-  <summary>Notice: AI‑assisted</summary>
-  Used: <code>Github Copilot</code>, <code>Microsoft Copilot</code>, and <code>Google Gemini 2.5</code>
+  <summary>Notice: AI‑assisted Development</summary>
+  Certain parts of this repository used publicly available artificial intelligence to assist with development tasks, within reasonable bounds.
 </details>
