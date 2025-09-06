@@ -1,6 +1,5 @@
 import glfw
 
-
 def create_window():
     glfw.init()
     glfw.window_hint(glfw.MAXIMIZED, glfw.TRUE)
