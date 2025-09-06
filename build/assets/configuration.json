@@ -2,8 +2,8 @@
     "developer": "pyinstaller --onefile --collect-all glfw --icon=icon_developer.ico --version-file=version.txt main.py",
     "release_and_hotfix": "pyinstaller --onefile --noconsole --collect-all glfw --icon=icon_release.ico --version-file=version.txt main.py",
     "description": "A modular open-source voxel sandbox.",
-    "file_version": "0, 0, 0, 0",
+    "file_version": "1, 0, 0, 1",
     "name": "Bloxel",
-    "product_version": "0.0.0",
+    "product_version": "0.0.1",
     "copyright": "Copyright (c) Bloxel. All rights reserved."
 }
