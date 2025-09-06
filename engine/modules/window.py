@@ -9,6 +9,7 @@ def create_window():
     glfw.swap_interval(1)
     return window
 
+
 window = create_window()
 
 while not glfw.window_should_close(window):
