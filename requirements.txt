@@ -2,15 +2,15 @@
 Python 3.13+
 
 #Libraries:
-PyOpenGL
+PyInstaller
 GLFW
+PyOpenGL
 PyOpenAL
 DearPyGui
 Pillow
 NumPy
 SteamWorksPy
 Discord
-PyInstaller
 
 #Command:
-pip install pyopengl glfw pyopenal dearpygui pillow numpy steamworkspy discord pyinstaller
+pip install pyinstaller glfw pyopengl pyopenal dearpygui pillow numpy steamworkspy discord
